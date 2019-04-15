@@ -14,15 +14,9 @@
 # limitations under the License.
 #
 
-# overlays
+# Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Keyhandler
 PRODUCT_PACKAGES += \
-    SamSettings \
-    com.samsung.keyhandler
-
-PRODUCT_SYSTEM_SERVER_JARS += com.samsung.keyhandler
-
-# never dexopt the keyhandler
-$(call add-product-dex-preopt-module-config,com.samsung.keyhandler,disable)
+    SamSettings

@@ -52,15 +52,15 @@ public class Startup extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(final Context context, final Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
         if (Intent.ACTION_BOOT_COMPLETED.equals(action)
                 || Intent.ACTION_PRE_BOOT_COMPLETED.equals(action)) {
             // Disable touchscreen gesture settings if needed
             if (!hasTouchscreenGestures()) {
-                disableComponent(context, DeviceSettings.class.getName());
+                disableComponent(context, DeviceSettingsActivity.class.getName());
             } else {
-                enableComponent(context, DeviceSettings.class.getName());
+                enableComponent(context, DeviceSettingsActivity.class.getName());
                 // Restore nodes to saved preference values
                 for (String pref : Constants.sGesturePrefKeys) {
                     boolean value = Constants.isPreferenceEnabled(context, pref);
@@ -82,26 +82,10 @@ public class Startup extends BroadcastReceiver {
 
             // Disable button settings if needed
             if (!hasButtonProcs()) {
-                disableComponent(context, DeviceSettings.class.getName());
+                disableComponent(context, DeviceSettingsActivity.class.getName());
             } else {
-                enableComponent(context, DeviceSettings.class.getName());
-                // Restore nodes to saved preference values
-                for (String pref : Constants.sButtonPrefKeys) {
-                    String value;
-                    String node;
-                    if (Constants.sStringNodePreferenceMap.containsKey(pref)) {
-                        value = Constants.getPreferenceString(context, pref);
-                        node = Constants.sStringNodePreferenceMap.get(pref);
-                    } else {
-                        value = Constants.isPreferenceEnabled(context, pref) ?
-                                "1" : "0";
-                        node = Constants.sBooleanNodePreferenceMap.get(pref);
-                    }
-                    if (!FileUtils.writeLine(node, value)) {
-                        Log.w(TAG, "Write to node " + node +
-                                " failed while restoring saved preference values");
-                    }
-                }
+                enableComponent(context, DeviceSettingsActivity.class.getName());
+                DeviceSettings.restoreSliderStates(context);
             }
         }
 
@@ -131,9 +115,7 @@ public class Startup extends BroadcastReceiver {
     }
 
     private boolean hasButtonProcs () {
-        return (new File(Constants.NOTIF_SLIDER_TOP_NODE).exists() &&
-                new File(Constants.NOTIF_SLIDER_MIDDLE_NODE).exists() &&
-                new File(Constants.NOTIF_SLIDER_BOTTOM_NODE).exists());
+        return new File(Constants.NOTIF_SLIDER_NODE).exists();
     }
 
     private void disableComponent(Context context, String component) {

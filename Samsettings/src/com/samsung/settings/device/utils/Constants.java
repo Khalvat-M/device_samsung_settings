@@ -21,7 +21,8 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.support.v14.preference.SwitchPreference;
+import android.support.v7.preference.PreferenceManager;
 
 public class Constants {
 
@@ -31,9 +32,11 @@ public class Constants {
     public static final String TOUCHSCREEN_FLASHLIGHT_GESTURE_KEY = "touchscreen_gesture_flashlight";
 
     // Alert slider
-    public static final String NOTIF_SLIDER_TOP_KEY = "keycode_top_position";
-    public static final String NOTIF_SLIDER_MIDDLE_KEY = "keycode_middle_position";
-    public static final String NOTIF_SLIDER_BOTTOM_KEY = "keycode_bottom_position";
+    public static final String NOTIF_SLIDER_PANEL_KEY = "notification_slider";
+    public static final String NOTIF_SLIDER_USAGE_KEY = "slider_usage";
+    public static final String NOTIF_SLIDER_ACTION_TOP_KEY = "action_top_position";
+    public static final String NOTIF_SLIDER_ACTION_MIDDLE_KEY = "action_middle_position";
+    public static final String NOTIF_SLIDER_ACTION_BOTTOM_KEY = "action_bottom_position";
 
     // Gestures nodes
     public static final String TOUCHSCREEN_CAMERA_NODE = "/proc/touchpanel/letter_o_enable";
@@ -51,9 +54,20 @@ public class Constants {
     public static final boolean TOUCHSCREEN_FLASHLIGHT_DEFAULT = true;
 
     // Alert slider nodes
-    public static final String NOTIF_SLIDER_TOP_NODE = "/proc/tri-state-key/keyCode_top";
-    public static final String NOTIF_SLIDER_MIDDLE_NODE = "/proc/tri-state-key/keyCode_middle";
-    public static final String NOTIF_SLIDER_BOTTOM_NODE = "/proc/tri-state-key/keyCode_bottom";
+    public static final String NOTIF_SLIDER_NODE = "/sys/class/switch/tri-state-key/state";
+
+    public static final String NOTIF_SLIDER_FOR_NOTIFICATION = "1";
+    public static final String NOTIF_SLIDER_FOR_FLASHLIGHT = "2";
+    public static final String NOTIF_SLIDER_FOR_BRIGHTNESS = "3";
+    public static final String NOTIF_SLIDER_FOR_ROTATION = "4";
+    public static final String NOTIF_SLIDER_FOR_RINGER = "5";
+    public static final String NOTIF_SLIDER_FOR_NOTIFICATION_RINGER = "6";
+
+    public static final String ACTION_UPDATE_SLIDER_SETTINGS
+            = "com.samsung.settings.device.UPDATE_SLIDER_SETTINGS";
+
+    public static final String EXTRA_SLIDER_USAGE = "usage";
+    public static final String EXTRA_SLIDER_ACTIONS = "actions";
 
     // Display modes
     public static final String KEY_SRGB_SWITCH = "srgb";
@@ -73,10 +87,6 @@ public class Constants {
         TOUCHSCREEN_CAMERA_GESTURE_KEY,
         TOUCHSCREEN_MUSIC_GESTURE_KEY,
         TOUCHSCREEN_FLASHLIGHT_GESTURE_KEY
-    };     public static final String[] sButtonPrefKeys = {
-        NOTIF_SLIDER_TOP_KEY,
-        NOTIF_SLIDER_MIDDLE_KEY,
-        NOTIF_SLIDER_BOTTOM_KEY
     };
 
     static {
@@ -84,16 +94,10 @@ public class Constants {
         sBooleanNodePreferenceMap.put(TOUCHSCREEN_MUSIC_GESTURE_KEY, TOUCHSCREEN_DOUBLE_SWIPE_NODE);
         sBooleanNodePreferenceMap.put(TOUCHSCREEN_FLASHLIGHT_GESTURE_KEY,
                 TOUCHSCREEN_FLASHLIGHT_NODE);
-        sStringNodePreferenceMap.put(NOTIF_SLIDER_TOP_KEY, NOTIF_SLIDER_TOP_NODE);
-        sStringNodePreferenceMap.put(NOTIF_SLIDER_MIDDLE_KEY, NOTIF_SLIDER_MIDDLE_NODE);
-        sStringNodePreferenceMap.put(NOTIF_SLIDER_BOTTOM_KEY, NOTIF_SLIDER_BOTTOM_NODE);
 
         sNodeDefaultMap.put(TOUCHSCREEN_CAMERA_GESTURE_KEY, TOUCHSCREEN_CAMERA_DEFAULT);
         sNodeDefaultMap.put(TOUCHSCREEN_MUSIC_GESTURE_KEY, TOUCHSCREEN_MUSIC_DEFAULT);
         sNodeDefaultMap.put(TOUCHSCREEN_FLASHLIGHT_GESTURE_KEY, TOUCHSCREEN_FLASHLIGHT_DEFAULT);
-        sNodeDefaultMap.put(NOTIF_SLIDER_TOP_KEY, "601");
-        sNodeDefaultMap.put(NOTIF_SLIDER_MIDDLE_KEY, "602");
-        sNodeDefaultMap.put(NOTIF_SLIDER_BOTTOM_KEY, "603");
     }
 
     public static boolean isPreferenceEnabled(Context context, String key) {
@@ -104,5 +108,9 @@ public class Constants {
     public static String getPreferenceString(Context context, String key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString(key, (String) sNodeDefaultMap.get(key));
+    }
+
+    public static boolean isNotificationSliderSupported() {
+        return true;
     }
 }
